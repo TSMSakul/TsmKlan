@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSM Clan</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #05070f;
+    --bg2: #0a0e1a;
+    --bg3: #0f1525;
+    --accent: #00d4ff;
+    --accent2: #ff3c00;
+    --gold: #ffd700;
+    --silver: #c0c0c0;
+    --bronze: #cd7f32;
+    --vip: #a855f7;
+    --admin: #ef4444;
+    --hoster: #f97316;
+    --player: #3b82f6;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: #1e293b;
+    --glow: 0 0 20px rgba(0,212,255,0.3);
+    --glow2: 0 0 20px rgba(255,60,0,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ANIMATED BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 20% 20%, rgba(0,212,255,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(255,60,0,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SCREENS */
+  .screen {
+    display: none;
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+  }
+  .screen.active { display: flex; }
+
+  /* ===== LOGIN SCREEN ===== */
+  #loginScreen {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .logo-container {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: fadeDown 0.8s ease;
+  }
+
+  .logo-tsm {
+    font-family: 'Orbitron', monospace;
+    font-size: 80px;
+    font-weight: 900;
+    letter-spacing: 8px;
+    background: linear-gradient(135deg, #00d4ff, #ffffff, #ff3c00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    filter: drop-shadow(0 0 30px rgba(0,212,255,0.5));
+    animation: pulse-logo 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-logo {
+    0%,100% { filter: drop-shadow(0 0 20px rgba(0,212,255,0.4)); }
+    50% { filter: drop-shadow(0 0 40px rgba(0,212,255,0.8)); }
+  }
+
+  .logo-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 6px;
+    color: var(--muted);
+    margin-top: 8px;
+    text-transform: uppercase;
+  }
+
+  .login-box {
+    background: rgba(10,14,26,0.9);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 4px;
+    padding: 40px;
+    width: 380px;
+    position: relative;
+    animation: fadeUp 0.8s ease 0.2s both;
+    box-shadow: 0 0 60px rgba(0,212,255,0.08), inset 0 1px 0 rgba(0,212,255,0.1);
+  }
+
+  .login-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  .login-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    margin-bottom: 32px;
+    text-align: center;
+  }
+
+  .field-group {
+    margin-bottom: 20px;
+  }
+
+  .field-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .field-input {
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    transition: all 0.3s;
+    outline: none;
+  }
+
+  .field-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(0,212,255,0.1), var(--glow);
+    background: rgba(0,212,255,0.03);
+  }
+
+  .btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(0,212,255,0.05));
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    padding: 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, rgba(0,212,255,0.25), rgba(0,212,255,0.1));
+    box-shadow: var(--glow);
+    transform: translateY(-1px);
+  }
+
+  .btn-danger {
+    background: linear-gradient(135deg, rgba(255,60,0,0.15), rgba(255,60,0,0.05));
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+  .btn-danger:hover {
+    background: linear-gradient(135deg, rgba(255,60,0,0.25), rgba(255,60,0,0.1));
+    box-shadow: var(--glow2);
+  }
+
+  .error-msg {
+    color: var(--accent2);
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-top: 12px;
+    text-align: center;
+    min-height: 16px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .admin-link {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  .admin-link:hover { color: var(--accent2); }
+
+  /* ===== MAIN SCREEN ===== */
+  #mainScreen {
+    flex-direction: column;
+  }
+
+  /* NAV */
+  .nav {
+    background: rgba(5,7,15,0.95);
+    border-bottom: 1px solid rgba(0,212,255,0.15);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    height: 64px;
+    gap: 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    margin-right: auto;
+    text-shadow: 0 0 20px rgba(0,212,255,0.5);
+  }
+
+  .nav-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-username {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .role-badge {
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-family: 'Orbitron', monospace;
+    text-transform: uppercase;
+  }
+
+  .role-VIP { background: rgba(168,85,247,0.2); border: 1px solid var(--vip); color: var(--vip); }
+  .role-Admin { background: rgba(239,68,68,0.2); border: 1px solid var(--admin); color: var(--admin); }
+  .role-Hoster { background: rgba(249,115,22,0.2); border: 1px solid var(--hoster); color: var(--hoster); }
+  .role-Player { background: rgba(59,130,246,0.2); border: 1px solid var(--player); color: var(--player); }
+
+  .btn-logout {
+    background: rgba(255,60,0,0.1);
+    border: 1px solid rgba(255,60,0,0.4);
+    color: var(--accent2);
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 8px 16px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-logout:hover { background: rgba(255,60,0,0.2); box-shadow: var(--glow2); }
+
+  /* CONTENT */
+  .content {
+    padding: 48px 32px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    letter-spacing: 6px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(0,212,255,0.3), transparent);
+  }
+
+  /* RANKING TABLE */
+  .ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .ranking-table th {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ranking-table td {
+    padding: 16px;
+    border-bottom: 1px solid rgba(30,41,59,0.5);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+  }
+
+  .ranking-table tr {
+    transition: background 0.2s;
+  }
+
+  .ranking-table tr:hover td {
+    background: rgba(0,212,255,0.03);
+  }
+
+  .rank-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    width: 50px;
+  }
+
+  .rank-1 { color: var(--gold); text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+  .rank-2 { color: var(--silver); }
+  .rank-3 { color: var(--bronze); }
+  .rank-other { color: var(--muted); font-size: 14px; }
+
+  .player-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .score-val {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .kd-val { color: var(--text); }
+  .wins-val { color: #22c55e; }
+
+  /* ===== ADMIN SCREEN ===== */
+  #adminScreen {
+    flex-direction: column;
+  }
+
+  .admin-nav {
+    background: rgba(5,7,15,0.95);
+    border-bottom: 1px solid rgba(255,60,0,0.2);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    height: 64px;
+    gap: 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .admin-logo {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--accent2);
+    letter-spacing: 4px;
+    margin-right: auto;
+    text-shadow: 0 0 20px rgba(255,60,0,0.5);
+  }
+
+  .admin-content {
+    padding: 48px 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* ADMIN TABS */
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tab-btn {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 12px 20px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* USER CARDS */
+  .user-card {
+    background: rgba(10,14,26,0.8);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: border-color 0.3s;
+  }
+
+  .user-card:hover { border-color: rgba(255,60,0,0.3); }
+
+  .user-card-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .user-card-pass {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    background: rgba(0,0,0,0.3);
+    padding: 4px 10px;
+    border-radius: 2px;
+    min-width: 120px;
+  }
+
+  .btn-sm {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 7px 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid;
+    text-transform: uppercase;
+  }
+
+  .btn-edit {
+    background: rgba(0,212,255,0.1);
+    border-color: rgba(0,212,255,0.4);
+    color: var(--accent);
+  }
+  .btn-edit:hover { background: rgba(0,212,255,0.2); }
+
+  .btn-del {
+    background: rgba(255,60,0,0.1);
+    border-color: rgba(255,60,0,0.4);
+    color: var(--accent2);
+  }
+  .btn-del:hover { background: rgba(255,60,0,0.2); }
+
+  /* ADD USER FORM */
+  .add-user-form {
+    background: rgba(10,14,26,0.8);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 4px;
+    padding: 28px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .add-user-form::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 16px;
+    align-items: end;
+  }
+
+  .role-select {
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .role-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(0,212,255,0.1);
+  }
+
+  .role-select option { background: var(--bg2); }
+
+  /* RANKING ADMIN */
+  .ranking-admin-row {
+    background: rgba(10,14,26,0.8);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 50px 1fr 120px 100px 100px auto auto;
+    gap: 12px;
+    align-items: center;
+    transition: border-color 0.3s;
+  }
+
+  .ranking-admin-row:hover { border-color: rgba(0,212,255,0.2); }
+
+  .mini-input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 6px 10px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .mini-input:focus { border-color: var(--accent); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 4px;
+    padding: 36px;
+    width: 420px;
+    position: relative;
+    animation: scaleIn 0.2s ease;
+  }
+
+  .modal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  .modal-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: flex-end;
+  }
+
+  .btn-cancel {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 10px 20px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-cancel:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+  .success-toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: rgba(34,197,94,0.15);
+    border: 1px solid #22c55e;
+    color: #22c55e;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    z-index: 300;
+    animation: slideIn 0.3s ease;
+    display: none;
+  }
+
+  @keyframes fadeDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:none; } }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+  @keyframes scaleIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
+  @keyframes slideIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:none; } }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  .stat-bar {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .stat-chip {
+    background: rgba(10,14,26,0.8);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 24px;
+    flex: 1;
+    text-align: center;
+  }
+
+  .stat-chip-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-chip-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .welcome-msg {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 40px;
+    letter-spacing: 1px;
+  }
+
+  .welcome-msg span { color: var(--accent); font-weight: 600; }
+
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .ranking-admin-row { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .login-box { width: 90%; padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- ======= LOGIN SCREEN ======= -->
+<div id="loginScreen" class="screen active">
+  <div class="logo-container">
+    <div class="logo-tsm">TSM</div>
+    <div class="logo-sub">The Supreme Masters · Clan Portal</div>
+  </div>
+  <div class="login-box">
+    <div class="login-title">— ZUGANG —</div>
+    <div class="field-group">
+      <label class="field-label">Benutzername</label>
+      <input class="field-input" id="loginUser" type="text" placeholder="dein_name" autocomplete="off">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Passwort</label>
+      <input class="field-input" id="loginPass" type="password" placeholder="••••••••">
+    </div>
+    <button class="btn-primary" onclick="doLogin()">EINLOGGEN</button>
+    <div class="error-msg" id="loginError"></div>
+    <div class="admin-link" onclick="showAdminLogin()">⚙ Admin-Bereich</div>
+  </div>
+</div>
+
+<!-- ======= MAIN SCREEN ======= -->
+<div id="mainScreen" class="screen">
+  <nav class="nav">
+    <div class="nav-logo">TSM</div>
+    <div class="nav-user">
+      <span class="nav-username" id="navUsername"></span>
+      <span class="role-badge" id="navRole"></span>
+    </div>
+    <button class="btn-logout" onclick="logout()">LOGOUT</button>
+  </nav>
+  <div class="content">
+    <div class="welcome-msg">Willkommen zurück, <span id="welcomeName"></span>. Bereit für den nächsten Einsatz?</div>
+    <div class="stat-bar" id="statBar"></div>
+    <div class="section-title">Rangliste</div>
+    <table class="ranking-table" id="rankingTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Spieler</th>
+          <th>Rolle</th>
+          <th>Punkte</th>
+          <th>K/D</th>
+          <th>Siege</th>
+        </tr>
+      </thead>
+      <tbody id="rankingBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ======= ADMIN SCREEN ======= -->
+<div id="adminScreen" class="screen">
+  <nav class="admin-nav">
+    <div class="admin-logo">⚙ TSM ADMIN</div>
+    <button class="btn-logout btn-danger" onclick="logout()">VERLASSEN</button>
+  </nav>
+  <div class="admin-content">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('users',this)">Benutzer</button>
+      <button class="tab-btn" onclick="switchTab('ranking',this)">Rangliste</button>
+    </div>
+
+    <!-- USERS TAB -->
+    <div class="tab-content active" id="tab-users">
+      <div class="section-title">Neuen Benutzer erstellen</div>
+      <div class="add-user-form">
+        <div class="form-row">
+          <div class="field-group" style="margin:0">
+            <label class="field-label">Benutzername</label>
+            <input class="field-input" id="newUsername" type="text" placeholder="spieler_name">
+          </div>
+          <div class="field-group" style="margin:0">
+            <label class="field-label">Passwort</label>
+            <input class="field-input" id="newPassword" type="text" placeholder="passwort123">
+          </div>
+          <div class="field-group" style="margin:0">
+            <label class="field-label">Rolle</label>
+            <select class="role-select" id="newRole">
+              <option value="Player">Player</option>
+              <option value="VIP">VIP</option>
+              <option value="Hoster">Hoster</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+          <button class="btn-primary" style="width:auto;padding:12px 20px;white-space:nowrap;margin-top:0" onclick="addUser()">+ HINZUFÜGEN</button>
+        </div>
+        <div class="error-msg" id="addUserError" style="text-align:left;margin-top:12px"></div>
+      </div>
+
+      <div class="section-title">Alle Benutzer</div>
+      <div id="userList"></div>
+    </div>
+
+    <!-- RANKING TAB -->
+    <div class="tab-content" id="tab-ranking">
+      <div class="section-title">Rangliste bearbeiten</div>
+      <div class="add-user-form">
+        <div class="form-row">
+          <div class="field-group" style="margin:0">
+            <label class="field-label">Spieler</label>
+            <input class="field-input" id="rNewName" type="text" placeholder="spieler_name">
+          </div>
+          <div class="field-group" style="margin:0">
+            <label class="field-label">Punkte</label>
+            <input class="field-input" id="rNewScore" type="number" placeholder="0">
+          </div>
+          <div class="field-group" style="margin:0">
+            <label class="field-label">K/D</label>
+            <input class="field-input" id="rNewKd" type="text" placeholder="1.00">
+          </div>
+          <div class="field-group" style="margin:0">
+            <label class="field-label">Siege</label>
+            <input class="field-input" id="rNewWins" type="number" placeholder="0">
+          </div>
+          <button class="btn-primary" style="width:auto;padding:12px 20px;white-space:nowrap;margin-top:0" onclick="addRankEntry()">+ EINTRAG</button>
+        </div>
+      </div>
+      <div id="rankingAdminList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN MODAL -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal">
+    <div class="modal-title">ADMIN ZUGANG</div>
+    <div class="field-group">
+      <label class="field-label">Admin Code</label>
+      <input class="field-input" id="adminCode" type="password" placeholder="••••••••••" onkeydown="if(e=>e.key==='Enter') doAdminLogin()">
+    </div>
+    <div class="error-msg" id="adminCodeError"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeAdminModal()">Abbrechen</button>
+      <button class="btn-primary btn-danger" style="width:auto;padding:10px 24px;margin:0" onclick="doAdminLogin()">ZUGANG</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT USER MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title">BENUTZER BEARBEITEN</div>
+    <input type="hidden" id="editUserId">
+    <div class="field-group">
+      <label class="field-label">Benutzername</label>
+      <input class="field-input" id="editUsername" type="text">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Passwort</label>
+      <input class="field-input" id="editPassword" type="text">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Rolle</label>
+      <select class="role-select" id="editRole">
+        <option value="Player">Player</option>
+        <option value="VIP">VIP</option>
+        <option value="Hoster">Hoster</option>
+        <option value="Admin">Admin</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeEditModal()">Abbrechen</button>
+      <button class="btn-primary" style="width:auto;padding:10px 24px;margin:0" onclick="saveEdit()">SPEICHERN</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="success-toast" id="toast"></div>
+
+<script>
+// ==================== DATA ====================
+let state = {
+  users: [
+    { id: 1, username: 'TSM_Leader', password: 'tsm2024', role: 'Admin' },
+    { id: 2, username: 'TSM_Pro', password: 'pro123', role: 'VIP' },
+    { id: 3, username: 'TSM_Host', password: 'host456', role: 'Hoster' },
+    { id: 4, username: 'TSM_Rookie', password: 'rookie789', role: 'Player' },
+  ],
+  ranking: [
+    { id: 1, name: 'TSM_Leader', score: 9850, kd: '3.24', wins: 142 },
+    { id: 2, name: 'TSM_Pro', score: 8720, kd: '2.87', wins: 118 },
+    { id: 3, name: 'TSM_Host', score: 7540, kd: '2.11', wins: 97 },
+    { id: 4, name: 'TSM_Rookie', score: 5230, kd: '1.44', wins: 58 },
+  ],
+  currentUser: null,
+  isAdmin: false,
+  nextUserId: 5,
+  nextRankId: 5,
+};
+
+const ADMIN_CODE = 'TSM221212';
+
+// ==================== AUTH ====================
+function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const match = state.users.find(u => u.username === user && u.password === pass);
+  if (!match) {
+    document.getElementById('loginError').textContent = '> ZUGANG VERWEIGERT';
+    return;
+  }
+  state.currentUser = match;
+  state.isAdmin = false;
+  showMain();
+}
+
+function showAdminLogin() {
+  document.getElementById('adminModal').classList.add('active');
+  document.getElementById('adminCode').value = '';
+  document.getElementById('adminCodeError').textContent = '';
+  setTimeout(() => document.getElementById('adminCode').focus(), 100);
+}
+
+function doAdminLogin() {
+  const code = document.getElementById('adminCode').value;
+  if (code !== ADMIN_CODE) {
+    document.getElementById('adminCodeError').textContent = '> FALSCHER CODE';
+    return;
+  }
+  document.getElementById('adminModal').classList.remove('active');
+  state.isAdmin = true;
+  state.currentUser = null;
+  showAdmin();
+}
+
+function closeAdminModal() {
+  document.getElementById('adminModal').classList.remove('active');
+}
+
+function logout() {
+  state.currentUser = null;
+  state.isAdmin = false;
+  showLogin();
+}
+
+// ==================== SCREENS ====================
+function showLogin() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('loginScreen').classList.add('active');
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').textContent = '';
+}
+
+function showMain() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('mainScreen').classList.add('active');
+  const u = state.currentUser;
+  document.getElementById('navUsername').textContent = u.username;
+  document.getElementById('welcomeName').textContent = u.username;
+  const roleEl = document.getElementById('navRole');
+  roleEl.textContent = u.role;
+  roleEl.className = `role-badge role-${u.role}`;
+  renderStats();
+  renderRanking();
+}
+
+function showAdmin() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('adminScreen').classList.add('active');
+  renderUserList();
+  renderRankingAdmin();
+}
+
+// ==================== STATS ====================
+function renderStats() {
+  const totalUsers = state.users.length;
+  const topScore = Math.max(...state.ranking.map(r => r.score));
+  const totalWins = state.ranking.reduce((a, b) => a + b.wins, 0);
+  document.getElementById('statBar').innerHTML = `
+    <div class="stat-chip"><span class="stat-chip-val">${totalUsers}</span><span class="stat-chip-label">Mitglieder</span></div>
+    <div class="stat-chip"><span class="stat-chip-val">${topScore.toLocaleString()}</span><span class="stat-chip-label">Top Punkte</span></div>
+    <div class="stat-chip"><span class="stat-chip-val">${totalWins}</span><span class="stat-chip-label">Gesamtsiege</span></div>
+  `;
+}
+
+// ==================== RANKING ====================
+function renderRanking() {
+  const sorted = [...state.ranking].sort((a, b) => b.score - a.score);
+  const body = document.getElementById('rankingBody');
+  body.innerHTML = sorted.map((r, i) => {
+    const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'rank-other';
+    const rankSymbol = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+    const user = state.users.find(u => u.username === r.name);
+    const role = user ? user.role : 'Player';
+    return `
+      <tr>
+        <td><span class="rank-number ${rankClass}">${rankSymbol}</span></td>
+        <td><span class="player-name">${r.name}</span></td>
+        <td><span class="role-badge role-${role}">${role}</span></td>
+        <td><span class="score-val">${r.score.toLocaleString()}</span></td>
+        <td><span class="kd-val">${r.kd}</span></td>
+        <td><span class="wins-val">${r.wins}</span></td>
+      </tr>`;
+  }).join('');
+}
+
+// ==================== ADMIN: USERS ====================
+function renderUserList() {
+  const list = document.getElementById('userList');
+  if (!state.users.length) { list.innerHTML = '<p style="color:var(--muted);font-family:Share Tech Mono,monospace;font-size:13px">Keine Benutzer vorhanden.</p>'; return; }
+  list.innerHTML = state.users.map(u => `
+    <div class="user-card">
+      <div class="user-card-name">${u.username}</div>
+      <span class="role-badge role-${u.role}">${u.role}</span>
+      <div class="user-card-pass">🔑 ${u.password}</div>
+      <button class="btn-sm btn-edit" onclick="openEdit(${u.id})">BEARBEITEN</button>
+      <button class="btn-sm btn-del" onclick="deleteUser(${u.id})">LÖSCHEN</button>
+    </div>
+  `).join('');
+}
+
+function addUser() {
+  const username = document.getElementById('newUsername').value.trim();
+  const password = document.getElementById('newPassword').value.trim();
+  const role = document.getElementById('newRole').value;
+  const errEl = document.getElementById('addUserError');
+  if (!username || !password) { errEl.textContent = '> Name und Passwort erforderlich'; return; }
+  if (state.users.find(u => u.username === username)) { errEl.textContent = '> Benutzername bereits vergeben'; return; }
+  errEl.textContent = '';
+  state.users.push({ id: state.nextUserId++, username, password, role });
+  document.getElementById('newUsername').value = '';
+  document.getElementById('newPassword').value = '';
+  renderUserList();
+  showToast(`Benutzer "${username}" erstellt!`);
+}
+
+function deleteUser(id) {
+  const u = state.users.find(u => u.id === id);
+  if (!u) return;
+  if (!confirm(`"${u.username}" wirklich löschen?`)) return;
+  state.users = state.users.filter(u => u.id !== id);
+  renderUserList();
+  showToast(`Benutzer gelöscht.`);
+}
+
+function openEdit(id) {
+  const u = state.users.find(u => u.id === id);
+  if (!u) return;
+  document.getElementById('editUserId').value = id;
+  document.getElementById('editUsername').value = u.username;
+  document.getElementById('editPassword').value = u.password;
+  document.getElementById('editRole').value = u.role;
+  document.getElementById('editModal').classList.add('active');
+}
+
+function saveEdit() {
+  const id = parseInt(document.getElementById('editUserId').value);
+  const u = state.users.find(u => u.id === id);
+  if (!u) return;
+  u.username = document.getElementById('editUsername').value.trim() || u.username;
+  u.password = document.getElementById('editPassword').value.trim() || u.password;
+  u.role = document.getElementById('editRole').value;
+  document.getElementById('editModal').classList.remove('active');
+  renderUserList();
+  showToast('Benutzer aktualisiert!');
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').classList.remove('active');
+}
+
+// ==================== ADMIN: RANKING ====================
+function renderRankingAdmin() {
+  const sorted = [...state.ranking].sort((a, b) => b.score - a.score);
+  const list = document.getElementById('rankingAdminList');
+  list.innerHTML = sorted.map((r, i) => `
+    <div class="ranking-admin-row">
+      <span style="font-family:Orbitron,monospace;font-size:18px;font-weight:700;color:var(--muted)">#${i+1}</span>
+      <input class="mini-input" value="${r.name}" onchange="updateRank(${r.id},'name',this.value)" placeholder="Name">
+      <input class="mini-input" type="number" value="${r.score}" onchange="updateRank(${r.id},'score',parseInt(this.value)||0)" placeholder="Punkte">
+      <input class="mini-input" value="${r.kd}" onchange="updateRank(${r.id},'kd',this.value)" placeholder="K/D">
+      <input class="mini-input" type="number" value="${r.wins}" onchange="updateRank(${r.id},'wins',parseInt(this.value)||0)" placeholder="Siege">
+      <button class="btn-sm btn-edit" onclick="saveRankingAdmin()">SPEICHERN</button>
+      <button class="btn-sm btn-del" onclick="deleteRank(${r.id})">LÖSCHEN</button>
+    </div>
+  `).join('');
+}
+
+function updateRank(id, field, value) {
+  const r = state.ranking.find(r => r.id === id);
+  if (r) r[field] = value;
+}
+
+function saveRankingAdmin() {
+  renderRankingAdmin();
+  showToast('Rangliste gespeichert!');
+}
+
+function deleteRank(id) {
+  state.ranking = state.ranking.filter(r => r.id !== id);
+  renderRankingAdmin();
+  showToast('Eintrag gelöscht.');
+}
+
+function addRankEntry() {
+  const name = document.getElementById('rNewName').value.trim();
+  const score = parseInt(document.getElementById('rNewScore').value) || 0;
+  const kd = document.getElementById('rNewKd').value.trim() || '0.00';
+  const wins = parseInt(document.getElementById('rNewWins').value) || 0;
+  if (!name) { showToast('Name erforderlich!'); return; }
+  state.ranking.push({ id: state.nextRankId++, name, score, kd, wins });
+  document.getElementById('rNewName').value = '';
+  document.getElementById('rNewScore').value = '';
+  document.getElementById('rNewKd').value = '';
+  document.getElementById('rNewWins').value = '';
+  renderRankingAdmin();
+  showToast(`"${name}" zur Rangliste hinzugefügt!`);
+}
+
+// ==================== TABS ====================
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(`tab-${name}`).classList.add('active');
+}
+
+// ==================== TOAST ====================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = '✓ ' + msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 2500);
+}
+
+// ENTER key support
+document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('adminCode').addEventListener('keydown', e => { if (e.key === 'Enter') doAdminLogin(); });
+
+// Close modals on overlay click
+document.getElementById('adminModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeAdminModal(); });
+document.getElementById('editModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeEditModal(); });
+</script>
+</body>
+</html>
